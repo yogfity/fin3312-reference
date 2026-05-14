@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finance Reference — FIN 3310</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   DESIGN TOKENS — Linear-inspired cool modern (charcoal + electric blue)
+   ============================================================ */
+:root {
+  /* Type */
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Monaco, Consolas, monospace;
+
+  /* Light theme — Linear-style cool grays + electric blue */
+  --bg: #fcfcfd;
+  --bg-elevated: #ffffff;
+  --bg-subtle: #f6f7f9;
+  --bg-code: #f4f5f8;
+  --bg-accent: #eef4ff;
+
+  --border: #e4e6eb;
+  --border-strong: #d0d3d9;
+  --border-accent: #c7d6ff;
+
+  --text: #0e0e10;
+  --text-secondary: #5b5d66;
+  --text-tertiary: #8c8f99;
+  --text-on-accent: #ffffff;
+
+  --accent: #5b8def;          /* electric blue */
+  --accent-strong: #3b6fe0;
+  --accent-soft: #dbe7ff;
+
+  --success: #2ea043;
+  --warning: #d97757;
+  --danger: #d6464a;
+
+  /* Effects */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.08);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* Layout */
+  --sidebar-w: 264px;
+  --toc-w: 224px;
+  --content-max: 760px;
+}
+
+[data-theme="dark"] {
+  --bg: #0c0d10;
+  --bg-elevated: #15161a;
+  --bg-subtle: #1a1b21;
+  --bg-code: #1a1b21;
+  --bg-accent: #1a2236;
+
+  --border: #25272d;
+  --border-strong: #34363e;
+  --border-accent: #2a3a5e;
+
+  --text: #f1f2f5;
+  --text-secondary: #a4a7b0;
+  --text-tertiary: #6f727b;
+
+  --accent: #6e9bff;
+  --accent-strong: #87adff;
+  --accent-soft: #1f2c4a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "ss03", "cv11";
+}
+
+::selection { background: var(--accent-soft); color: var(--text); }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar {
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.brand-mark {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  display: grid; place-items: center;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-title { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+.brand-sub { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
+
+.nav-section { margin-bottom: 18px; }
+.nav-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  padding: 0 8px 8px;
+}
+
+.nav-list { list-style: none; padding: 0; margin: 0; }
+
+.nav-item a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background 0.12s ease, color 0.12s ease;
+  font-weight: 450;
+}
+
+.nav-item a:hover {
+  background: var(--bg-subtle);
+  color: var(--text);
+}
+
+.nav-item a.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 500;
+}
+
+[data-theme="dark"] .nav-item a.active {
+  color: var(--accent-strong);
+}
+
+.nav-num {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+  min-width: 18px;
+}
+
+.nav-item a.active .nav-num { color: var(--accent-strong); }
+
+/* View toggle */
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 8px 12px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.view-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.view-btn.active {
+  background: var(--bg-elevated);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main {
+  padding: 24px 48px 120px;
+  max-width: 100%;
+}
+
+.main-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--toc-w);
+  gap: 48px;
+  max-width: calc(var(--content-max) + var(--toc-w) + 48px);
+  margin: 0 auto;
+}
+
+.content { min-width: 0; }
+
+/* ============================================================
+   HEADER BAR
+   ============================================================ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  margin-bottom: 24px;
+  background: linear-gradient(to bottom, var(--bg) 80%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  max-width: 360px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px 8px 34px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  outline: none;
+  transition: border 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.search-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.search-kbd {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  background: var(--bg-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+.theme-toggle {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: all 0.15s ease;
+}
+
+.theme-toggle:hover { background: var(--bg-subtle); color: var(--text); }
+
+.theme-toggle .sun, .theme-toggle .moon { transition: opacity 0.2s ease; }
+[data-theme="light"] .theme-toggle .moon { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: none; }
+[data-theme="light"] .theme-toggle .sun { display: block; }
+[data-theme="dark"] .theme-toggle .moon { display: block; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  padding: 12px 0 36px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+  animation: fadeUp 0.5s ease;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent-strong);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 16px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.hero-title {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0 0 16px;
+  background: linear-gradient(180deg, var(--text) 0%, var(--text-secondary) 140%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--text-secondary);
+  max-width: 580px;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.hero-meta-item { display: inline-flex; align-items: center; gap: 6px; }
+.hero-meta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/* ============================================================
+   CONTENT TYPOGRAPHY
+   ============================================================ */
+.module {
+  margin-bottom: 80px;
+  scroll-margin-top: 80px;
+  animation: fadeIn 0.4s ease;
+}
+
+.module-header {
+  margin-bottom: 32px;
+}
+
+.module-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent-strong);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.module-title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  margin: 0 0 10px;
+}
+
+.module-desc {
+  color: var(--text-secondary);
+  font-size: 15px;
+  max-width: 580px;
+  margin: 0;
+}
+
+h3.topic {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  margin: 44px 0 14px;
+  padding-top: 12px;
+  scroll-margin-top: 80px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h3.topic::before {
+  content: '';
+  width: 3px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+h4.subtopic {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 28px 0 10px;
+  letter-spacing: -0.005em;
+  color: var(--text);
+}
+
+p { margin: 12px 0; color: var(--text); }
+p.lead { color: var(--text-secondary); }
+
+ul, ol { padding-left: 22px; margin: 12px 0; }
+li { margin: 5px 0; color: var(--text); }
+
+a { color: var(--accent-strong); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+a:hover { border-bottom-color: var(--accent); }
+
+strong { font-weight: 600; color: var(--text); }
+em { color: var(--text-secondary); font-style: italic; }
+
+/* ============================================================
+   CODE & FORMULA STYLING
+   ============================================================ */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 1.5px 6px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-feature-settings: "calt", "ss02";
+}
+
+.formula {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  padding: 16px 20px;
+  background: var(--bg-code);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  margin: 14px 0;
+  overflow-x: auto;
+  letter-spacing: 0.01em;
+}
+
+.formula-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.keystrokes {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.keystrokes-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.keystrokes-header::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+}
+
+.keystrokes ol { padding-left: 20px; margin: 0; }
+.keystrokes li { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-secondary); padding: 1px 0; }
+.keystrokes li strong { color: var(--text); font-weight: 600; }
+
+/* ============================================================
+   CALLOUT BOXES
+   ============================================================ */
+.callout {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  margin: 18px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.callout-icon {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  margin-top: 2px;
+}
+
+.callout-content { min-width: 0; flex: 1; }
+.callout-content p:first-child { margin-top: 0; }
+.callout-content p:last-child { margin-bottom: 0; }
+
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 13.5px;
+}
+
+.callout.trap {
+  background: rgba(217, 119, 87, 0.06);
+  border-color: rgba(217, 119, 87, 0.25);
+  color: var(--text);
+}
+.callout.trap .callout-icon { color: var(--warning); }
+.callout.trap .callout-title { color: var(--warning); }
+
+.callout.tip {
+  background: var(--accent-soft);
+  border-color: var(--border-accent);
+  color: var(--text);
+}
+[data-theme="dark"] .callout.tip { background: var(--bg-accent); }
+.callout.tip .callout-icon { color: var(--accent); }
+.callout.tip .callout-title { color: var(--accent-strong); }
+
+.callout.note {
+  background: var(--bg-subtle);
+  border-color: var(--border);
+  color: var(--text);
+}
+.callout.note .callout-icon { color: var(--text-secondary); }
+.callout.note .callout-title { color: var(--text); }
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.table-wrap {
+  margin: 18px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+th, td {
+  text-align: left;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+  color: var(--text);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-subtle); }
+
+td code { background: transparent; padding: 0; border: none; font-size: 13px; }
+
+/* ============================================================
+   EXAMPLE / STORY CARDS
+   ============================================================ */
+.example {
+  margin: 18px 0;
+  padding: 18px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.example-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.example-title {
+  font-weight: 600;
+  margin: 0 0 6px;
+  font-size: 15.5px;
+  letter-spacing: -0.005em;
+}
+
+.example-given {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin: 6px 0 12px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+}
+
+/* Collapsible details */
+details {
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+  padding-top: 10px;
+}
+
+details summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-strong);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  user-select: none;
+}
+
+details summary::-webkit-details-marker { display: none; }
+details summary::before {
+  content: '+';
+  display: inline-block;
+  width: 14px; height: 14px;
+  text-align: center;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 14px;
+  transition: transform 0.2s ease;
+}
+
+details[open] summary::before { content: '−'; }
+
+details .details-body {
+  margin-top: 10px;
+  padding-left: 4px;
+  animation: fadeIn 0.2s ease;
+}
+
+/* ============================================================
+   TOC (right rail)
+   ============================================================ */
+.toc {
+  position: sticky;
+  top: 80px;
+  height: max-content;
+  font-size: 12.5px;
+  border-left: 1px solid var(--border);
+  padding-left: 20px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.toc-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin: 0 0 12px;
+}
+
+.toc ul { list-style: none; padding: 0; margin: 0; }
+.toc li { margin: 0; }
+
+.toc a {
+  display: block;
+  padding: 5px 10px;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  border-left: 2px solid transparent;
+  margin-left: -22px;
+  padding-left: 20px;
+  transition: all 0.15s ease;
+  border-bottom: none;
+  line-height: 1.45;
+}
+
+.toc a:hover { color: var(--text); border-bottom: none; }
+.toc a.active {
+  color: var(--accent-strong);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+
+/* ============================================================
+   BADGES & MISC
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.badge.weight {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.badge.questions {
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+/* Decoder boxes — special-purpose mapping tables */
+.decoder {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 0;
+  margin: 14px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-size: 13.5px;
+}
+
+.decoder > div {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.decoder > div:nth-last-child(-n+2) { border-bottom: none; }
+
+.decoder .key {
+  background: var(--bg-subtle);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text);
+  border-right: 1px solid var(--border);
+}
+
+.decoder .val { color: var(--text); }
+
+/* Hidden by search */
+.hidden-by-search { display: none !important; }
+
+/* No results */
+.no-results {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.module:nth-child(1) { animation-delay: 0.05s; }
+.module:nth-child(2) { animation-delay: 0.08s; }
+.module:nth-child(3) { animation-delay: 0.11s; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  margin-top: 100px;
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-tertiary);
+  font-size: 12.5px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-meta { font-family: var(--font-mono); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .main-inner { grid-template-columns: 1fr; }
+  .toc { display: none; }
+}
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: relative;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .main { padding: 16px 20px 80px; }
+  .hero-title { font-size: 28px; }
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+  .sidebar, .toc, .header, .footer { display: none; }
+  .main { padding: 0; }
+  .main-inner { grid-template-columns: 1fr; max-width: 100%; }
+  .module { page-break-inside: avoid; }
+  details { border: none; }
+  details > * { display: block !important; }
+}
+
+</style>
+</head>
+<body data-theme="light">
+
+<div class="layout">
+
+  <!-- ===================================================== -->
+  <!-- SIDEBAR                                                -->
+  <!-- ===================================================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">F</div>
+      <div class="brand-text">
+        <div class="brand-title">Finance Reference</div>
+        <div class="brand-sub">FIN 3310 / Spring 2026</div>
+      </div>
+    </div>
+
+    <div class="view-toggle" role="tablist">
+      <button class="view-btn active" data-view="module">By Module</button>
+      <button class="view-btn" data-view="problem">By Problem Type</button>
+    </div>
+
+    <!-- MODULE VIEW NAV -->
+    <div class="nav-section" data-view="module">
+      <div class="nav-label">Course Modules</div>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#mod1"><span class="nav-num">01</span>Foundations</a></li>
+        <li class="nav-item"><a href="#mod3"><span class="nav-num">03</span>Time Value of Money</a></li>
+        <li class="nav-item"><a href="#mod4"><span class="nav-num">04</span>Bonds</a></li>
+        <li class="nav-item"><a href="#mod5"><span class="nav-num">05</span>Risk &amp; Return</a></li>
+        <li class="nav-item"><a href="#mod6"><span class="nav-num">06</span>Stocks</a></li>
+        <li class="nav-item"><a href="#mod7"><span class="nav-num">07</span>Capital Budgeting</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-section" data-view="module">
+      <div class="nav-label">Appendix</div>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#calc"><span class="nav-num">A1</span>TI-84 Quick Reference</a></li>
+        <li class="nav-item"><a href="#formulas"><span class="nav-num">A2</span>Formula Index</a></li>
+        <li class="nav-item"><a href="#wording"><span class="nav-num">A3</span>Wording Decoders</a></li>
+        <li class="nav-item"><a href="#patterns"><span class="nav-num">A4</span>Two-Step Patterns</a></li>
+      </ul>
+    </div>
+
+    <!-- PROBLEM-TYPE VIEW NAV -->
+    <div class="nav-section" data-view="problem" style="display: none;">
+      <div class="nav-label">Stock Problems</div>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#pt-gordon">Constant growth (Gordon)</a></li>
+        <li class="nav-item"><a href="#pt-zero-growth">Zero growth / preferred</a></li>
+        <li class="nav-item"><a href="#pt-nonconstant">Non-constant growth</a></li>
+        <li class="nav-item"><a href="#pt-deferred">Deferred dividends</a></li>
+        <li class="nav-item"><a href="#pt-finite">Finite (stops paying)</a></li>
+        <li class="nav-item"><a href="#pt-solve-g">Solving for g</a></li>
+        <li class="nav-item"><a href="#pt-solve-r">Solving for r</a></li>
+        <li class="nav-item"><a href="#pt-pe-ps">PE / P-S valuation</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-section" data-view="problem" style="display: none;">
+      <div class="nav-label">Bond Problems</div>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#pt-bond-price">Bond pricing</a></li>
+        <li class="nav-item"><a href="#pt-bond-ytm">Solving for YTM</a></li>
+        <li class="nav-item"><a href="#pt-bond-coupon">Solving for coupon rate</a></li>
+        <li class="nav-item"><a href="#pt-bond-future">Future bond price</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-section" data-view="problem" style="display: none;">
+      <div class="nav-label">Capital Budgeting</div>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#pt-npv">NPV</a></li>
+        <li class="nav-item"><a href="#pt-irr">IRR</a></li>
+        <li class="nav-item"><a href="#pt-payback">Payback / PI / MIRR</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-section" data-view="problem" style="display: none;">
+      <div class="nav-label">TVM Patterns</div>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#pt-retirement">Two-step retirement</a></li>
+        <li class="nav-item"><a href="#pt-mortgage">Mortgage amortization</a></li>
+        <li class="nav-item"><a href="#pt-deferred-annuity">Deferred annuity</a></li>
+        <li class="nav-item"><a href="#pt-ear-apr">EAR vs APR</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- ===================================================== -->
+  <!-- MAIN                                                   -->
+  <!-- ===================================================== -->
+  <main class="main">
+
+    <header class="header">
+      <div class="search-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input class="search-input" type="search" placeholder="Search formulas, concepts, problems…" id="search" autocomplete="off" />
+        <span class="search-kbd">/</span>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="main-inner">
+
+      <div class="content" id="content">
+
+        <!-- ============================== HERO -->
+        <section class="hero">
+          <div class="hero-eyebrow">Reference Documentation</div>
+          <h1 class="hero-title">Corporate Finance — A working reference, built from a real semester.</h1>
+          <p class="hero-desc">
+            Everything covered in FIN 3310: foundations, time value of money, bonds, risk and return, stocks, and capital budgeting. Organized by module <em>and</em> by problem type, with every formula, calculator workflow, and trap I learned to spot. Built to be useful five years from now, not just five days from now.
+          </p>
+          <div class="hero-meta">
+            <span class="hero-meta-item"><span class="hero-meta-dot"></span>7 modules</span>
+            <span class="hero-meta-item"><span class="hero-meta-dot"></span>50+ formulas</span>
+            <span class="hero-meta-item"><span class="hero-meta-dot"></span>TI-84 workflows</span>
+            <span class="hero-meta-item"><span class="hero-meta-dot"></span>Real problem examples</span>
+          </div>
+        </section>
+
+        <!-- ============================== MODULE 1: FOUNDATIONS -->
+        <section class="module" id="mod1">
+          <header class="module-header">
+            <div class="module-eyebrow">Module 1–2 · <span class="badge questions">4 exam questions</span></div>
+            <h2 class="module-title">Foundations</h2>
+            <p class="module-desc">The goal of financial management, business organization forms, agency conflicts, and the markets where securities trade. Mostly conceptual — fast points if you know the vocabulary.</p>
+          </header>
+
+          <h3 class="topic" id="goal-of-firm">Goal of Financial Management</h3>
+          <p>The objective of the firm — and the lens through which every decision is evaluated — is to <strong>maximize the current market value of the existing equity</strong>. Equivalent phrasings: maximize shareholder wealth, maximize the stock price.</p>
+
+          <div class="callout trap">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">Why not these other goals?</div>
+              <p><strong>Maximize profit:</strong> ignores timing of cash flows and risk; easy to game with accounting choices.<br/>
+              <strong>Maximize sales / market share:</strong> can lose money in pursuit of growth.<br/>
+              <strong>Maximize EPS:</strong> manipulable through buybacks and accounting.<br/>
+              <strong>Avoid bankruptcy:</strong> too conservative — leaves value on the table.</p>
+            </div>
+          </div>
+
+          <h3 class="topic" id="org-forms">Forms of Business Organization</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Form</th><th>Liability</th><th>Taxation</th><th>Life</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Sole Proprietorship</td><td>Unlimited personal</td><td>Personal income tax (once)</td><td>Limited (dies with owner)</td></tr>
+                <tr><td>Partnership</td><td>Unlimited joint</td><td>Personal income tax (once)</td><td>Limited</td></tr>
+                <tr><td><strong>Corporation</strong></td><td>Limited (to investment)</td><td><strong>Double-taxed</strong> (corp + dividends)</td><td>Unlimited</td></tr>
+                <tr><td>LLC</td><td>Limited</td><td>Pass-through</td><td>Variable</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><strong>Trade-off in a nutshell:</strong> Corporations get limited liability, transferable ownership, and unlimited life — at the cost of double taxation. Sole props and partnerships are simple and taxed once — at the cost of unlimited personal liability and a finite life.</p>
+
+          <h3 class="topic" id="agency">The Agency Problem</h3>
+          <p>A conflict of interest between <strong>principals</strong> (shareholders, who own the firm) and <strong>agents</strong> (managers, who run it). Managers may pursue perks, empire-building, job security, or short-term results at the expense of long-term shareholder value.</p>
+
+          <h4 class="subtopic">Mechanisms to align interests</h4>
+          <ul>
+            <li><strong>Stock-based compensation</strong> — managers get paid in equity, so their wealth tracks the share price</li>
+            <li><strong>Threat of takeover</strong> — poorly-run firms become acquisition targets, and bad managers get replaced</li>
+            <li><strong>Threat of firing</strong> by the board of directors</li>
+            <li><strong>Monitoring</strong> by large shareholders and institutional investors</li>
+          </ul>
+
+          <p><strong>Agency costs</strong> are the costs that arise from this conflict — direct (monitoring expenses) and indirect (lost value from poor decisions).</p>
+
+          <h3 class="topic" id="markets">Financial Markets</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Distinction</th><th>Definition</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Primary market</strong></td><td>Where new securities are issued (IPOs, new bond offerings). Money flows <em>to the company</em>.</td></tr>
+                <tr><td><strong>Secondary market</strong></td><td>Where existing securities trade between investors. The company gets nothing — it's investor-to-investor.</td></tr>
+                <tr><td><strong>Money market</strong></td><td>Short-term debt (under 1 year): T-bills, commercial paper</td></tr>
+                <tr><td><strong>Capital market</strong></td><td>Long-term debt and equity: bonds, stocks</td></tr>
+                <tr><td><strong>Auction market</strong></td><td>Brokers match buyers and sellers. <strong>NYSE.</strong></td></tr>
+                <tr><td><strong>Dealer market (OTC)</strong></td><td>Dealers buy/sell from inventory. <strong>NASDAQ.</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="topic" id="bankruptcy">Bankruptcy Priority</h3>
+          <p>When a company is liquidated, claimants are paid in this strict order:</p>
+          <ol>
+            <li><strong>Senior debt</strong> (secured creditors first)</li>
+            <li><strong>Bonds / unsecured creditors</strong></li>
+            <li><strong>Preferred stockholders</strong></li>
+            <li><strong>Common stockholders</strong> — residual claimants, get whatever's left (usually nothing)</li>
+          </ol>
+
+          <div class="callout note">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div class="callout-content">
+              Common stock = lowest priority. This is why equity is riskier than debt: in bankruptcy, equity holders are last in line, and the line usually doesn't reach them.
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================== MODULE 3: TVM -->
+        <section class="module" id="mod3">
+          <header class="module-header">
+            <div class="module-eyebrow">Module 3 · <span class="badge questions">3 exam questions</span></div>
+            <h2 class="module-title">Time Value of Money</h2>
+            <p class="module-desc">A dollar today is worth more than a dollar tomorrow. All of finance is just translating cash flows between points in time using a discount rate.</p>
+          </header>
+
+          <h3 class="topic" id="tvm-vars">The Five TVM Variables</h3>
+          <p>Every TVM problem revolves around five variables. You're always given four and solving for the fifth.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Variable</th><th>Meaning</th><th>TI-84 Key</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>N</td><td>Number of periods</td><td><code>N</code></td></tr>
+                <tr><td>I/Y</td><td>Interest rate per period</td><td><code>I%</code></td></tr>
+                <tr><td>PV</td><td>Present value (today)</td><td><code>PV</code></td></tr>
+                <tr><td>PMT</td><td>Recurring payment</td><td><code>PMT</code></td></tr>
+                <tr><td>FV</td><td>Future value</td><td><code>FV</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout tip">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">Sign convention</div>
+              Money <strong>out</strong> of your pocket is negative. Money <strong>in</strong> is positive. The calculator enforces this — if you invest $1,000 today (money out), enter PV as <code>−1000</code>. The signs are bookkeeping; report final answers as positive.
+            </div>
+          </div>
+
+          <h3 class="topic" id="tvm-types">The Four Problem Types</h3>
+
+          <h4 class="subtopic">1. Single lump sum (no PMT)</h4>
+          <p>Invest $X today, what's it worth in N years? Or: I need $X in N years, how much today?</p>
+          <p>TI-84: PMT = 0, solve for PV or FV.</p>
+
+          <h4 class="subtopic">2. Annuity (level PMT, no lump sum)</h4>
+          <p>Save $X per year for N years. Or: receive $X per year for N years.</p>
+          <p>TI-84: Either PV or FV = 0, solve for the other.</p>
+
+          <h4 class="subtopic">3. Mixed (PMT + lump sum)</h4>
+          <p>Both a stream and a final/initial lump sum. <strong>This is what bond pricing is.</strong> PMT = coupons, FV = face value. Same machinery, different domain.</p>
+
+          <h4 class="subtopic">4. Uneven cash flows</h4>
+          <p>Different cash flows each period. TVM Solver doesn't work — use the <code>npv(</code> function.</p>
+
+          <h3 class="topic" id="perpetuity">Perpetuities</h3>
+          <p>An annuity that lasts forever.</p>
+
+          <span class="formula-label">Zero-growth perpetuity</span>
+          <code class="formula">PV = C / r</code>
+
+          <span class="formula-label">Growing perpetuity (Gordon model)</span>
+          <code class="formula">PV = C₁ / (r − g)</code>
+
+          <p>The growing perpetuity formula is the bones of the constant-growth stock model — same equation, different name.</p>
+
+          <h3 class="topic" id="ear-apr">EAR vs APR</h3>
+
+          <p><strong>APR (stated rate)</strong> is the rate as advertised. It doesn't account for compounding frequency.</p>
+          <p><strong>EAR (effective annual rate)</strong> is the true rate after compounding within the year. EAR ≥ APR always.</p>
+
+          <span class="formula-label">Effective annual rate</span>
+          <code class="formula">EAR = (1 + APR/m)^m − 1</code>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Compounding</th><th>m</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Annual</td><td>1</td></tr>
+                <tr><td>Semiannual</td><td>2</td></tr>
+                <tr><td>Quarterly</td><td>4</td></tr>
+                <tr><td>Monthly</td><td>12</td></tr>
+                <tr><td>Daily</td><td>365</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <span class="formula-label">Continuous compounding</span>
+          <code class="formula">EAR = e^APR − 1</code>
+
+          <div class="callout trap">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">The compounding trick</div>
+              "12% compounded monthly" doesn't mean you earn 12% a year. You earn 1% a month, which compounds to <strong>12.68%</strong> effective. Two loans both quoted at "12% APR" cost different amounts depending on compounding frequency.
+            </div>
+          </div>
+
+          <h3 class="topic" id="rule-72">Rule of 72</h3>
+          <p>Mental-math shortcut for doubling time:</p>
+          <code class="formula">Years to double ≈ 72 / r</code>
+          <p>At 8%, money doubles in ~9 years. Useful for sanity checks.</p>
+
+          <h3 class="topic" id="annuity-due">Annuity Due vs Ordinary Annuity</h3>
+          <p><strong>Ordinary annuity (END):</strong> payment at the <em>end</em> of each period. This is the default — most loans, bonds, retirement contributions.</p>
+          <p><strong>Annuity due (BGN):</strong> payment at the <em>beginning</em> of each period. Used for leases, rent, some insurance.</p>
+
+          <div class="keystrokes">
+            <div class="keystrokes-header">TI-84: Switch to BGN mode</div>
+            <ol>
+              <li><strong>2ND</strong> then <strong>PMT</strong> (opens BEGIN/END menu)</li>
+              <li>Highlight <strong>BGN</strong></li>
+              <li><strong>ENTER</strong></li>
+              <li><strong>2ND</strong> then <strong>MODE</strong> to exit</li>
+            </ol>
+          </div>
+
+          <div class="callout note">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div class="callout-content">
+              Always reset to END after a BGN problem. Otherwise you'll silently get wrong answers on every subsequent ordinary annuity problem.
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================== MODULE 4: BONDS -->
+        <section class="module" id="mod4">
+          <header class="module-header">
+            <div class="module-eyebrow">Module 4 · <span class="badge questions">7 exam questions</span></div>
+            <h2 class="module-title">Bonds</h2>
+            <p class="module-desc">A bond is a loan you make to a company or government. They pay you periodic coupon interest and return the face value at maturity. Every bond problem reduces to the same TVM machinery: annuity of coupons plus lump sum at maturity.</p>
+          </header>
+
+          <h3 class="topic" id="bond-anatomy">Anatomy of a Bond</h3>
+          <p>Five variables, five questions. A bond problem gives you four — find the fifth.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Variable</th><th>What it represents</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>N</td><td>Periods to maturity</td></tr>
+                <tr><td>I/Y</td><td>Yield to maturity per period</td></tr>
+                <tr><td>PMT</td><td>Coupon payment per period (a dollar amount)</td></tr>
+                <tr><td>FV</td><td>Face value (almost always $1,000)</td></tr>
+                <tr><td>PV</td><td>Bond price today</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <span class="formula-label">Coupon payment</span>
+          <code class="formula">PMT = Face Value × Coupon Rate</code>
+
+          <div class="callout trap">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">Coupon rate ≠ YTM</div>
+              The <strong>coupon rate</strong> is fixed in the bond contract forever. The <strong>YTM</strong> is the market rate, which changes daily. They're equal only at issuance (and rarely thereafter).
+            </div>
+          </div>
+
+          <h3 class="topic" id="bond-pricing">Price vs Yield Relationship</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Relationship</th><th>Bond is called</th><th>Why</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Coupon = YTM</td><td><strong>Par bond</strong> (price = $1,000)</td><td>Coupon exactly compensates for the market rate</td></tr>
+                <tr><td>Coupon &gt; YTM</td><td><strong>Premium bond</strong> (price &gt; $1,000)</td><td>Bond pays more than market demands — worth extra</td></tr>
+                <tr><td>Coupon &lt; YTM</td><td><strong>Discount bond</strong> (price &lt; $1,000)</td><td>Bond pays less than market demands — sells cheap</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><strong>The fundamental inverse:</strong> Interest rates and bond prices move in opposite directions. Rates up → prices down.</p>
+
+          <h3 class="topic" id="semiannual">Semiannual Setup (The Most Common Variant)</h3>
+          <p>Most U.S. corporate bonds pay coupons twice a year. When a problem says "semiannual" or "pays interest twice a year":</p>
+
+          <ul>
+            <li><code>N = years × 2</code> (number of 6-month periods)</li>
+            <li><code>I/Y = annual YTM ÷ 2</code> (per-period rate)</li>
+            <li><code>PMT = annual coupon ÷ 2</code></li>
+            <li><code>FV = $1,000</code> (unchanged)</li>
+            <li>If solving for I/Y, the answer is semiannual — <strong>multiply by 2</strong> to get the annual YTM</li>
+          </ul>
+
+          <h3 class="topic" id="bond-types-of-problem">The Four Bond Question Types</h3>
+
+          <h4 class="subtopic">Find bond price (given everything else)</h4>
+          <div class="keystrokes">
+            <div class="keystrokes-header">TI-84 workflow</div>
+            <ol>
+              <li>Enter N, I/Y, PMT, FV</li>
+              <li><strong>CPT PV</strong></li>
+              <li>Drop the negative sign — that's calculator convention for outflow</li>
+            </ol>
+          </div>
+
+          <h4 class="subtopic">Find YTM (given price)</h4>
+          <div class="keystrokes">
+            <div class="keystrokes-header">TI-84 workflow</div>
+            <ol>
+              <li>Enter N, PV (<strong>negative</strong>, since you pay it), PMT, FV</li>
+              <li><strong>CPT I/Y</strong></li>
+              <li>If semiannual: <strong>multiply by 2</strong> for annual YTM</li>
+            </ol>
+          </div>
+
+          <h4 class="subtopic">Find coupon rate (given price and YTM)</h4>
+          <div class="keystrokes">
+            <div class="keystrokes-header">TI-84 workflow</div>
+            <ol>
+              <li>Enter N, I/Y, PV (negative), FV</li>
+              <li><strong>CPT PMT</strong> → gives per-period coupon in dollars</li>
+              <li>Annual bond: <strong>rate = PMT / Face</strong></li>
+              <li>Semiannual bond: <strong>rate = (PMT × 2) / Face</strong></li>
+            </ol>
+          </div>
+
+          <h4 class="subtopic">Find time to maturity</h4>
+          <div class="keystrokes">
+            <div class="keystrokes-header">TI-84 workflow</div>
+            <ol>
+              <li>Enter I/Y, PV (negative), PMT, FV</li>
+              <li><strong>CPT N</strong></li>
+              <li>If semiannual: <strong>divide N by 2</strong> for years</li>
+            </ol>
+          </div>
+
+          <h3 class="topic" id="current-yield">Current Yield</h3>
+          <code class="formula">Current Yield = Annual Coupon / Bond Price</code>
+
+          <p>This measures only the income return — it ignores the capital gain or loss from the bond price drifting toward par at maturity. YTM captures the <em>total</em> return.</p>
+
+          <ul>
+            <li><strong>Discount bond:</strong> Current Yield &lt; YTM (you also gain as price rises to $1,000)</li>
+            <li><strong>Premium bond:</strong> Current Yield &gt; YTM (you lose as price falls to $1,000)</li>
+            <li><strong>Par bond:</strong> Current Yield = YTM = coupon rate</li>
+          </ul>
+
+          <h3 class="topic" id="bond-risks">Types of Bond Risk</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Risk</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>Interest rate risk</td><td>Bond prices fall when rates rise. Bigger impact on long-maturity, low-coupon bonds.</td></tr>
+                <tr><td>Default (credit) risk</td><td>Issuer fails to make coupon or principal payments. Higher for low-rated bonds; near-zero for U.S. Treasuries.</td></tr>
+                <tr><td>Inflation risk</td><td>Real return is eroded if inflation exceeds expectations.</td></tr>
+                <tr><td>Reinvestment risk</td><td>Early coupons may have to be reinvested at lower rates if market rates fall.</td></tr>
+                <tr><td>Liquidity risk</td><td>Bond can't be sold quickly without a price discount. Worst for thinly-traded corporates.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4 class="subtopic">Interest rate risk drivers</h4>
+          <ul>
+            <li><strong>Longer maturity → more interest rate risk.</strong> A 30-year bond moves much more than a 2-year bond when rates change.</li>
+            <li><strong>Lower coupon → more interest rate risk.</strong> Zero-coupon bonds are the most rate-sensitive of all.</li>
+          </ul>
+
+          <h3 class="topic" id="ratings">Credit Ratings</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tier</th><th>S&amp;P</th><th>Moody's</th></tr></thead>
+              <tbody>
+                <tr><td>Investment grade</td><td>AAA → AA → A → <strong>BBB-</strong></td><td>Aaa → Aa → A → <strong>Baa3</strong></td></tr>
+                <tr><td>Speculative ("junk" / high-yield)</td><td><strong>BB+</strong> → BB → B → CCC → ... → D</td><td><strong>Ba1</strong> → Ba → B → Caa → Ca → C</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><strong>The cutoff line:</strong> <code>BBB-</code> (Baa3) is the lowest investment grade. <code>BB+</code> (Ba1) is the highest junk grade. Many institutional investors (pensions, insurance) are <strong>prohibited</strong> from holding speculative-grade debt — so falling below BBB- is a big deal for an issuer.</p>
+
+          <!-- WORKED EXAMPLES -->
+          <h3 class="topic" id="bond-examples">Worked examples from the semester</h3>
+
+          <div class="example">
+            <span class="example-tag">Annual coupon</span>
+            <div class="example-title">German company — bond pricing</div>
+            <div class="example-given">€1,000 par, 10 years, 7.2% annual coupon, YTM 9.2%. Find price.</div>
+            <p>Coupon (7.2%) &lt; YTM (9.2%) → discount bond → expect price below par.</p>
+            <p>N=10, I/Y=9.2, PMT=72, FV=1000, CPT PV → <strong>€872.77</strong>. Discount, as expected.</p>
+          </div>
+
+          <div class="example">
+            <span class="example-tag">Solve for coupon rate</span>
+            <div class="example-title">Gordon Enterprises</div>
+            <div class="example-given">15 years, $1,000 par, sells for $954, YTM 9.3%, annual. Find coupon rate.</div>
+            <p>N=15, I/Y=9.3, PV=−954, FV=1000, CPT PMT → $86.49.</p>
+            <p>Coupon rate = $86.49 / $1,000 = <strong>8.65%</strong>. Less than YTM, consistent with discount bond.</p>
+          </div>
+
+          <div class="example">
+            <span class="example-tag">Semiannual, "issued X years ago"</span>
+            <div class="example-title">Elkus Company</div>
+            <div class="example-given">16-year bonds issued 1 year ago, 6.7% coupon semiannual, $1,000 par, YTM 5.3%. Find price.</div>
+            <p>Years remaining: 16 − 1 = <strong>15</strong> (this is the trap — read carefully).</p>
+            <p>N=30, I/Y=2.65, PMT=33.50, FV=1000, CPT PV → <strong>$1,141.95</strong>. Premium, since coupon &gt; YTM.</p>
+          </div>
+
+          <div class="example">
+            <span class="example-tag">Solve for YTM</span>
+            <div class="example-title">Chen Company</div>
+            <div class="example-given">16-year bonds issued 2 years ago, 10% coupon semiannual, currently selling at 98% of par. Find YTM.</div>
+            <p>Years remaining: 14. Price: $980. N=28, PMT=50, FV=1000, PV=−980.</p>
+            <p>CPT I/Y → 5.136% (semiannual) × 2 = <strong>10.27% annual YTM</strong>.</p>
+          </div>
+        </section>
+
+        <!-- ============================== MODULE 5: RISK -->
+        <section class="module" id="mod5">
+          <header class="module-header">
+            <div class="module-eyebrow">Module 5 · <span class="badge questions">5 exam questions</span></div>
+            <h2 class="module-title">Risk and Return</h2>
+            <p class="module-desc">How we measure risk, how we compensate investors for bearing it, and which risks investors actually get paid to take.</p>
+          </header>
+
+          <h3 class="topic" id="sd">Standard Deviation = Total Risk</h3>
+          <p>Standard deviation measures the average size of a stock's return swings from its mean. It captures <strong>every source of return variation</strong> — both market-wide and firm-specific. That's why it's called "total" risk.</p>
+
+          <span class="formula-label">Note</span>
+          <code class="formula">Variance (σ²) = Standard Deviation squared</code>
+          <p>Same idea as SD, just harder to interpret because the units are squared.</p>
+
+          <h3 class="topic" id="systematic">Systematic vs Unsystematic Risk</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th></th><th>Systematic Risk</th><th>Unsystematic Risk</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Also called</td><td>Market risk / non-diversifiable</td><td>Firm-specific / idiosyncratic / diversifiable</td></tr>
+                <tr><td>Affects</td><td>The entire market</td><td>One company or industry</td></tr>
+                <tr><td>Examples</td><td>Recession, rates, inflation, war</td><td>Lawsuit, scandal, earnings miss, factory fire</td></tr>
+                <tr><td>Diversifiable?</td><td><strong>No</strong></td><td><strong>Yes</strong></td></tr>
+                <tr><td>Measured by</td><td>Beta (β)</td><td>—</td></tr>
+                <tr><td>Compensated?</td><td>Yes — risk premium</td><td>No — diversifiable for free</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="topic" id="diversification">Why Diversification Works</h3>
+          <p>Holding one stock means bearing both systematic and unsystematic risk. As you add more stocks:</p>
+          <ul>
+            <li><strong>Unsystematic risk averages out</strong> — different firms experience different events that cancel each other</li>
+            <li><strong>Systematic risk stays</strong> — every stock responds to the same macro events</li>
+          </ul>
+          <p>At roughly 30–40 stocks, unsystematic risk approaches zero. What's left is systematic risk — the floor you can't get below.</p>
+
+          <div class="callout tip">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">Why CAPM uses β and not SD</div>
+              The market only pays you for risk you can't avoid. Since unsystematic risk is diversifiable for free, you don't get a premium for bearing it. Beta isolates the systematic portion — which is what determines required return.
+            </div>
+          </div>
+
+          <h3 class="topic" id="beta">Beta</h3>
+          <p>A measure of how much a stock moves with the market. The market itself has β = 1 by definition.</p>
+          <ul>
+            <li><strong>β = 1:</strong> moves with the market</li>
+            <li><strong>β &gt; 1:</strong> more volatile than the market (amplifies moves)</li>
+            <li><strong>β &lt; 1:</strong> less volatile than the market</li>
+            <li><strong>β &lt; 0:</strong> moves opposite to the market (rare — gold mining stocks sometimes)</li>
+          </ul>
+
+          <h3 class="topic" id="capm">CAPM</h3>
+          <p>The Capital Asset Pricing Model. Tells you what return investors require for a given stock, based on its systematic risk.</p>
+
+          <span class="formula-label">Required return (CAPM)</span>
+          <code class="formula">r = r_f + β × (r_m − r_f)</code>
+
+          <ul>
+            <li><code>r_f</code> = risk-free rate (typically Treasury yield)</li>
+            <li><code>r_m</code> = expected market return</li>
+            <li><code>(r_m − r_f)</code> = <strong>market risk premium</strong> — the extra return for bearing market risk</li>
+            <li><code>β × (r_m − r_f)</code> = <strong>stock risk premium</strong> — your stock's individual share of that</li>
+          </ul>
+
+          <div class="example">
+            <span class="example-tag">Combined CAPM + Gordon</span>
+            <div class="example-title">Moe's Tavern</div>
+            <div class="example-given">P₀ = $175, β = 1.5, D₀ = $2.50, r_f = 3%, market premium = 6%. Find expected g.</div>
+            <p>Step 1 — CAPM: r = 0.03 + 1.5(0.06) = <strong>12%</strong></p>
+            <p>Step 2 — solve for g (D₀ given): g = (175 × 0.12 − 2.50) / (175 + 2.50) = 18.50 / 177.50 = <strong>10.42%</strong></p>
+          </div>
+
+          <h3 class="topic" id="portfolio">Portfolio Math</h3>
+          <p>For a portfolio of multiple stocks, expected return and beta are both weighted averages.</p>
+
+          <span class="formula-label">Expected portfolio return</span>
+          <code class="formula">E(R_p) = Σ w_i × E(R_i)</code>
+
+          <span class="formula-label">Portfolio beta</span>
+          <code class="formula">β_p = Σ w_i × β_i</code>
+
+          <p>The weights are dollar weights — fraction of total portfolio value invested in each asset.</p>
+
+          <h3 class="topic" id="ratios">Financial Ratios (Concepts Only)</h3>
+          <p>You won't have to compute these on the exam, but you should know what each category measures:</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Category</th><th>What it measures</th><th>Examples</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Liquidity</strong></td><td>Ability to pay short-term bills</td><td>Current ratio, Quick ratio</td></tr>
+                <tr><td><strong>Leverage</strong></td><td>How much debt the firm uses</td><td>Debt/Equity, TIE</td></tr>
+                <tr><td><strong>Profitability</strong></td><td>How efficiently the firm earns</td><td>ROA, ROE, profit margin</td></tr>
+                <tr><td><strong>Market value</strong></td><td>What investors think the firm is worth</td><td>P/E, Market-to-Book</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================== MODULE 6: STOCKS -->
+        <section class="module" id="mod6">
+          <header class="module-header">
+            <div class="module-eyebrow">Module 6 · <span class="badge questions">Section 5 = 30 exam questions (combined with M7)</span></div>
+            <h2 class="module-title">Stock Valuation</h2>
+            <p class="module-desc">The heart of the course. Every stock model is a special case of "discount the future cash flows back to today." The art is identifying which model fits the wording of the problem.</p>
+          </header>
+
+          <h3 class="topic" id="gordon">Constant Growth (Gordon Model)</h3>
+          <p>The workhorse formula. Assumes dividends grow at a constant rate forever.</p>
+
+          <span class="formula-label">Current stock price</span>
+          <code class="formula">P₀ = D₁ / (r − g)</code>
+
+          <p>Critical: the numerator is <strong>D₁</strong> (next year's dividend), not D₀. If the problem gives you D₀ ("just paid"), grow it first: <code>D₁ = D₀ × (1 + g)</code>.</p>
+
+          <div class="callout note">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">When the formula breaks</div>
+              The Gordon model requires <strong>r &gt; g</strong>. If g ≥ r, the math says price = ∞, which means the formula doesn't apply — you can't actually grow faster than your discount rate forever.
+            </div>
+          </div>
+
+          <h3 class="topic" id="future-price">Future Stock Price</h3>
+          <p>In constant growth, the stock price grows at the same rate g as the dividends. So two equivalent ways to find the price t years out:</p>
+
+          <span class="formula-label">Shortcut</span>
+          <code class="formula">P_t = P₀ × (1 + g)^t</code>
+
+          <span class="formula-label">Long way (same answer)</span>
+          <code class="formula">P_t = D_(t+1) / (r − g)</code>
+
+          <p>Notice in the long way, the dividend is from year <code>t+1</code> — Gordon plants the price one year <em>before</em> the dividend in the numerator. This becomes critical in deferred-dividend problems.</p>
+
+          <h3 class="topic" id="zero-growth">Zero Growth / Preferred Stock</h3>
+          <p>Constant dividend forever, no growth. Same as a perpetuity.</p>
+
+          <span class="formula-label">Price of zero-growth stock</span>
+          <code class="formula">P₀ = D / r</code>
+
+          <p>Preferred stock uses this formula too — preferred dividends are typically fixed.</p>
+
+          <h3 class="topic" id="solving-r">Solving for r</h3>
+          <p>Algebraic rearrangement of Gordon:</p>
+
+          <span class="formula-label">Required return</span>
+          <code class="formula">r = D₁/P₀ + g</code>
+
+          <p>Two pieces with real meaning:</p>
+          <ul>
+            <li><strong>D₁/P₀</strong> = dividend yield (the income return)</li>
+            <li><strong>g</strong> = capital gains yield (price growth, equal to dividend growth)</li>
+            <li><strong>Total required return = dividend yield + capital gains yield</strong></li>
+          </ul>
+
+          <h3 class="topic" id="solving-g">Solving for g</h3>
+          <p>Two formulas, depending on what the problem gives you.</p>
+
+          <h4 class="subtopic">Case 1: D₁ given</h4>
+          <p>Simple rearrangement.</p>
+          <span class="formula-label">If D₁ is provided</span>
+          <code class="formula">g = r − D₁/P₀</code>
+
+          <h4 class="subtopic">Case 2: D₀ given</h4>
+          <p>Harder because g appears in both numerator and denominator. Cross-multiply, distribute, collect g terms.</p>
+
+          <span class="formula-label">If D₀ is provided (just-paid dividend)</span>
+          <code class="formula">g = (P₀ × r − D₀) / (D₀ + P₀)</code>
+
+          <details>
+            <summary>Derivation</summary>
+            <div class="details-body">
+              <p>Starting from <code>P₀ = D₀(1+g)/(r−g)</code>:</p>
+              <ol>
+                <li>Cross-multiply: <code>P₀(r−g) = D₀(1+g)</code></li>
+                <li>Distribute: <code>P₀r − P₀g = D₀ + D₀g</code></li>
+                <li>Collect g terms: <code>P₀r − D₀ = D₀g + P₀g</code></li>
+                <li>Factor: <code>P₀r − D₀ = g(D₀ + P₀)</code></li>
+                <li>Solve: <code>g = (P₀r − D₀) / (D₀ + P₀)</code></li>
+              </ol>
+            </div>
+          </details>
+
+          <h3 class="topic" id="nonconstant">Non-Constant Growth (Multi-Stage)</h3>
+          <p>Dividends grow at one rate for a while, then settle into constant growth. The classic exam-trap problem type.</p>
+
+          <h4 class="subtopic">Universal template</h4>
+          <ol>
+            <li>Build each dividend year by year through the irregular phase: D₁, D₂, … D_n</li>
+            <li>Compute the <strong>first dividend in the constant-growth phase</strong>: D_(n+1) = D_n × (1 + g)</li>
+            <li>Compute the <strong>terminal price</strong> at the end of the irregular phase: P_n = D_(n+1) / (r − g)</li>
+            <li>The year-n cash flow becomes <strong>D_n + P_n</strong> (dividend plus terminal value)</li>
+            <li>NPV all cash flows back to today</li>
+          </ol>
+
+          <div class="callout trap">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">The #1 trap on non-constant growth</div>
+              The terminal price <code>P_n</code> sits at the <strong>end of the irregular dividend period</strong> — the same year as the last irregular dividend. Then the first growing dividend is the <em>next</em> year. Putting P_n in the wrong year is the most common error students make on this entire chapter.
+            </div>
+          </div>
+
+          <div class="example">
+            <span class="example-tag">Two-stage growth</span>
+            <div class="example-title">Rahm Corporation</div>
+            <div class="example-given">D₀ = $3.70, g = 28% for 3 years then 7.9% forever, r = 16%.</div>
+            <p>D₁ = 4.74, D₂ = 6.06, D₃ = 7.76, D₄ = 8.37</p>
+            <p>P₃ = 8.37 / (0.16 − 0.079) = $103.36</p>
+            <p>Year 3 cash flow = 7.76 + 103.36 = $111.12</p>
+            <p>NPV(16, 0, {4.74, 6.06, 111.12}) → <strong>$78.65</strong></p>
+          </div>
+
+          <div class="example">
+            <span class="example-tag">"Double each year" growth</span>
+            <div class="example-title">Dividend doubles for 4 years</div>
+            <div class="example-given">D₀ = $0.50, doubles for 4 years, then 5% constant, r = 9.5%.</div>
+            <p>D₁ = 1.00, D₂ = 2.00, D₃ = 4.00, D₄ = 8.00, D₅ = 8.40</p>
+            <p>P₄ = 8.40 / 0.045 = $186.67. Year 4 CF = 8.00 + 186.67 = 194.67</p>
+            <p>NPV(9.5, 0, {1, 2, 4, 194.67}) → <strong>$141.03</strong></p>
+          </div>
+
+          <h3 class="topic" id="deferred">Deferred Dividends</h3>
+          <p>Company doesn't pay anything for several years, then starts paying. Sometimes the first dividend kicks off constant growth.</p>
+
+          <h4 class="subtopic">The recipe</h4>
+          <ol>
+            <li>Find the dividend that starts the constant growth phase, D_t</li>
+            <li>Apply Gordon: <code>P_(t−1) = D_t / (r − g)</code> — this gives the price <em>one year before</em> the first dividend</li>
+            <li>Discount that price back to today using N = t − 1</li>
+          </ol>
+
+          <div class="example">
+            <span class="example-tag">Deferred-then-growing</span>
+            <div class="example-title">Metallica Bearings</div>
+            <div class="example-given">No dividends for 11 years. First dividend at year 12 = $12.50. Then 5.5% growth forever. r = 13.5%.</div>
+            <p>P₁₁ = 12.50 / (0.135 − 0.055) = $156.25</p>
+            <p>Discount back 11 years: 156.25 / (1.135)^11 = <strong>$38.07</strong></p>
+          </div>
+
+          <h3 class="topic" id="finite">Finite Dividend (Stops Forever)</h3>
+          <p>Stock pays a fixed dividend for X years, then stops. <strong>This is not a perpetuity</strong> — it's a finite annuity.</p>
+
+          <div class="keystrokes">
+            <div class="keystrokes-header">TI-84 workflow</div>
+            <ol>
+              <li>N = years of dividend payments</li>
+              <li>I/Y = required return</li>
+              <li>PMT = dividend amount</li>
+              <li>FV = 0 (stock is worthless after dividends stop)</li>
+              <li><strong>CPT PV</strong> → price today</li>
+            </ol>
+          </div>
+
+          <div class="example">
+            <span class="example-tag">Finite annuity</span>
+            <div class="example-title">Hailey Corporation</div>
+            <div class="example-given">$14.50 constant dividend for 8 years, then ceases forever. r = 10%.</div>
+            <p>N=8, I=10, PMT=14.50, FV=0 → PV = <strong>$77.36</strong>. Not $145 (which would be a perpetuity).</p>
+          </div>
+
+          <h3 class="topic" id="multiples">Valuation by Multiples</h3>
+
+          <h4 class="subtopic">P/E (Price/Earnings) valuation</h4>
+          <code class="formula">Stock Price = EPS × P/E ratio</code>
+          <p>Used when comparing to peer multiples. Find a "benchmark" P/E from comparable firms, apply to your firm's EPS.</p>
+
+          <h4 class="subtopic">P/S (Price/Sales) valuation</h4>
+          <code class="formula">Stock Price = (Sales / Shares outstanding) × P/S ratio</code>
+          <p>Used when earnings are negative (a young or distressed company) and P/E can't be calculated. Same idea, different denominator.</p>
+
+          <h3 class="topic" id="d0-d1">D₀ vs D₁ — Reading the Wording</h3>
+          <p>Half the battle on stock problems is figuring out whether the dividend you're given is D₀ or D₁.</p>
+
+          <div class="decoder">
+            <div class="key">"just paid" / "recently paid"</div>
+            <div class="val">D₀ — grow forward: D₁ = D₀(1+g)</div>
+
+            <div class="key">"annual dividend of $X"</div>
+            <div class="val">D₀ (no time clue) — grow forward</div>
+
+            <div class="key">"next dividend"</div>
+            <div class="val">D₁ — use directly</div>
+
+            <div class="key">"will pay next year"</div>
+            <div class="val">D₁ — use directly</div>
+
+            <div class="key">"expected dividend"</div>
+            <div class="val">D₁ — use directly</div>
+
+            <div class="key">"current dividend" (in answer)</div>
+            <div class="val">D₀ — if you computed D₁, back it out: D₀ = D₁ / (1+g)</div>
+          </div>
+
+          <div class="callout trap">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">The most common stock-problem error</div>
+              Mixing up D₀ and D₁. If you blank, ask: "Has this money already been paid?" If yes, D₀ — grow it. If no, D₁ — use it.
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================== MODULE 7: CAPITAL BUDGETING -->
+        <section class="module" id="mod7">
+          <header class="module-header">
+            <div class="module-eyebrow">Module 7 · <span class="badge questions">Section 5 = 30 exam questions (combined with M6)</span></div>
+            <h2 class="module-title">Capital Budgeting</h2>
+            <p class="module-desc">Should the firm take this project? Five tools to answer that question — and a clear hierarchy of which one to trust when they disagree.</p>
+          </header>
+
+          <h3 class="topic" id="npv">NPV — The Gold Standard</h3>
+          <p>Net Present Value: the dollar value the project adds to the firm today, after discounting all future cash flows at the required return.</p>
+
+          <span class="formula-label">Decision rule</span>
+          <code class="formula">Accept if NPV > 0; reject if NPV < 0</code>
+
+          <div class="keystrokes">
+            <div class="keystrokes-header">TI-84 — NPV function</div>
+            <ol>
+              <li>APPS → Finance → <strong>npv(</strong></li>
+              <li>Syntax: <code>npv(rate%, −CF₀, {CF₁, CF₂, ...})</code></li>
+              <li>Rate as whole number (10 not 0.10)</li>
+              <li>CF₀ entered as <strong>negative</strong> (initial outflow)</li>
+              <li>Subsequent cash flows in curly braces</li>
+            </ol>
+          </div>
+
+          <h3 class="topic" id="irr">IRR — The Project's Built-In Return</h3>
+          <p>Internal Rate of Return: the discount rate that makes NPV = 0. Compare it to the required return to decide.</p>
+
+          <span class="formula-label">Decision rule</span>
+          <code class="formula">Accept if IRR > required return; reject if IRR < required return</code>
+
+          <div class="keystrokes">
+            <div class="keystrokes-header">TI-84 — IRR function</div>
+            <ol>
+              <li>APPS → Finance → <strong>irr(</strong></li>
+              <li>Syntax: <code>irr(−CF₀, {CF₁, CF₂, ...})</code></li>
+              <li>No rate argument — you're solving for it</li>
+              <li>Output is already a percentage</li>
+            </ol>
+          </div>
+
+          <div class="callout tip">
+            <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <div class="callout-content">
+              <div class="callout-title">"Indifferent" = "NPV = 0" = IRR</div>
+              When a problem asks "at what discount rate would you be indifferent between accepting and rejecting?" — they're asking for the IRR. Three phrasings, one calculation.
+            </div>
+          </div>
+
+          <h3 class="topic" id="npv-irr-conflict">NPV vs IRR — When They Disagree</h3>
+          <p>For independent projects, NPV and IRR always give the same accept/reject decision. For <strong>mutually exclusive</strong> projects (where you can only pick one), they can rank projects differently.</p>
+
+          <p><strong>When they conflict, always trust NPV.</strong> IRR has two known weaknesses: it assumes intermediate cash flows are reinvested at the IRR itself (unrealistic for high-IRR projects) and it can produce multiple values for projects with sign changes.</p>
+
+          <h3 class="topic" id="other-methods">Other Capital Budgeting Methods</h3>
+
+          <h4 class="subtopic">Payback Period</h4>
+          <p>How many years until cumulative cash flows recover the initial investment. Simple and intuitive but ignores time value and any cash flows after the payback point. Inferior to NPV.</p>
+
+          <h4 class="subtopic">Discounted Payback</h4>
+          <p>Same as payback but discount each cash flow first. Better than plain payback but still ignores cash flows after the payback point.</p>
+
+          <h4 class="subtopic">Profitability Index (PI)</h4>
+          <span class="formula-label">Formula</span>
+          <code class="formula">PI = PV of future cash flows / |CF₀|</code>
+          <p>Decision rule: accept if PI &gt; 1. Useful when capital is constrained and you need to rank projects by "bang for buck."</p>
+
+          <h4 class="subtopic">MIRR (Modified IRR)</h4>
+          <p>Addresses IRR's reinvestment-rate problem by explicitly assuming intermediate cash flows are reinvested at the required return (not at IRR). More realistic than plain IRR.</p>
+
+          <h3 class="topic" id="capbud-examples">Worked examples</h3>
+
+          <div class="example">
+            <span class="example-tag">Pure NPV</span>
+            <div class="example-title">Project with three years of cash flows</div>
+            <div class="example-given">CF₀ = −$151,000; Year 1 = $65,000; Year 2 = $74,000; Year 3 = $58,000. Required return: 11% and 22%.</div>
+            <p>At 11%: <code>npv(11, -151000, {65000, 74000, 58000})</code> → <strong>$11,758.27</strong> ✓ accept</p>
+            <p>At 22%: <code>npv(22, -151000, {65000, 74000, 58000})</code> → <strong>−$15,512.97</strong> ✗ reject</p>
+          </div>
+
+          <div class="example">
+            <span class="example-tag">IRR + decision</span>
+            <div class="example-title">CF₀ = −$146,000; Years 1–3 = $70K, $69K, $53K</div>
+            <p><code>irr(-146000, {70000, 69000, 53000})</code> → <strong>15.04%</strong></p>
+            <p>If required return is 16% → IRR &lt; r → <strong>reject</strong></p>
+          </div>
+
+          <div class="example">
+            <span class="example-tag">Indifference / IRR</span>
+            <div class="example-title">Level cash flow project</div>
+            <div class="example-given">Initial cost $9,200; $2,800 per year for 9 years. Find the discount rate at which you're indifferent.</div>
+            <p>"Indifferent" = NPV = 0 = IRR. Use TVM Solver since cash flows are level: N=9, PV=−9200, PMT=2800, FV=0, CPT I/Y → <strong>26.84%</strong></p>
+          </div>
+        </section>
+
+        <!-- ============================== APPENDIX A1: CALCULATOR -->
+        <section class="module" id="calc">
+          <header class="module-header">
+            <div class="module-eyebrow">Appendix A1</div>
+            <h2 class="module-title">TI-84 Quick Reference</h2>
+            <p class="module-desc">Every keystroke from the course in one place.</p>
+          </header>
+
+          <h3 class="topic" id="calc-tvm">TVM Solver</h3>
+          <p>The workhorse for any problem with level cash flows. APPS → Finance → TVM Solver.</p>
+
+          <ul>
+            <li><strong>N</strong> — number of periods</li>
+            <li><strong>I%</strong> — interest rate per period (as a percent, not decimal)</li>
+            <li><strong>PV</strong> — present value (negative for money out)</li>
+            <li><strong>PMT</strong> — recurring payment</li>
+            <li><strong>FV</strong> — future value</li>
+            <li><strong>P/Y</strong>, <strong>C/Y</strong> — keep both at 1 unless you're doing the manual semiannual conversion shortcut</li>
+            <li><strong>PMT: END</strong> — ordinary annuity (default). Switch to BGN for annuity due.</li>
+          </ul>
+
+          <p>To solve, scroll to the unknown variable and press <strong>ALPHA</strong> then <strong>ENTER</strong> (the SOLVE shortcut).</p>
+
+          <h3 class="topic" id="calc-npv">NPV function</h3>
+          <span class="formula-label">Syntax</span>
+          <code class="formula">npv(rate%, −CF₀, {CF₁, CF₂, …})</code>
+
+          <ul>
+            <li>Rate as whole number (10 not 0.10)</li>
+            <li>CF₀ negative for initial outflow</li>
+            <li>Other cash flows in curly braces, comma-separated</li>
+          </ul>
+
+          <h3 class="topic" id="calc-irr">IRR function</h3>
+          <span class="formula-label">Syntax</span>
+          <code class="formula">irr(−CF₀, {CF₁, CF₂, …})</code>
+
+          <ul>
+            <li>No rate argument — you're solving for it</li>
+            <li>Output already in percent</li>
+          </ul>
+
+          <h3 class="topic" id="calc-traps">Common calculator traps</h3>
+          <ol>
+            <li><strong>Sign mismatches</strong> — if money goes out today (investment), PV must be negative. Sign mismatches give nonsense answers or error messages.</li>
+            <li><strong>BGN mode stuck on</strong> — always reset to END after annuity-due problems.</li>
+            <li><strong>P/Y leftover from previous problem</strong> — default to 1 unless you have a reason.</li>
+            <li><strong>Decimal vs percent</strong> — I% takes the number as a percent (10 = 10%), not a decimal. Don't enter 0.10.</li>
+            <li><strong>Rounding intermediate values</strong> — McGraw-Hill grades to the penny. Store unrounded values in memory or carry 4+ decimals between steps.</li>
+          </ol>
+        </section>
+
+        <!-- ============================== APPENDIX A2: FORMULA INDEX -->
+        <section class="module" id="formulas">
+          <header class="module-header">
+            <div class="module-eyebrow">Appendix A2</div>
+            <h2 class="module-title">Formula Index</h2>
+            <p class="module-desc">Every formula from the semester, grouped by domain.</p>
+          </header>
+
+          <h3 class="topic" id="formulas-stocks">Stock Valuation</h3>
+          <span class="formula-label">Constant growth (Gordon)</span>
+          <code class="formula">P₀ = D₁ / (r − g)</code>
+
+          <span class="formula-label">Zero growth / preferred</span>
+          <code class="formula">P₀ = D / r</code>
+
+          <span class="formula-label">Required return</span>
+          <code class="formula">r = D₁/P₀ + g</code>
+
+          <span class="formula-label">Growth (D₁ given)</span>
+          <code class="formula">g = r − D₁/P₀</code>
+
+          <span class="formula-label">Growth (D₀ given)</span>
+          <code class="formula">g = (P₀ × r − D₀) / (D₀ + P₀)</code>
+
+          <span class="formula-label">Future price</span>
+          <code class="formula">P_t = P₀ × (1 + g)^t   or   P_t = D_(t+1) / (r − g)</code>
+
+          <span class="formula-label">Grow D₀ to D₁</span>
+          <code class="formula">D₁ = D₀ × (1 + g)</code>
+
+          <span class="formula-label">PE / P-S valuation</span>
+          <code class="formula">Price = EPS × PE   or   (Sales/Shares) × P/S</code>
+
+          <h3 class="topic" id="formulas-bonds">Bonds</h3>
+          <span class="formula-label">Coupon payment</span>
+          <code class="formula">PMT = Face × Coupon Rate</code>
+
+          <span class="formula-label">Bond price</span>
+          <code class="formula">Price = PV(coupon annuity) + PV(face value)</code>
+
+          <span class="formula-label">Current yield</span>
+          <code class="formula">CY = Annual Coupon / Bond Price</code>
+
+          <span class="formula-label">Coupon rate from PMT (annual)</span>
+          <code class="formula">Coupon rate = PMT / Face</code>
+
+          <span class="formula-label">Coupon rate from PMT (semiannual)</span>
+          <code class="formula">Coupon rate = (PMT × 2) / Face</code>
+
+          <h3 class="topic" id="formulas-tvm">Time Value of Money</h3>
+          <span class="formula-label">Perpetuity</span>
+          <code class="formula">PV = C / r</code>
+
+          <span class="formula-label">Growing perpetuity</span>
+          <code class="formula">PV = C₁ / (r − g)</code>
+
+          <span class="formula-label">EAR</span>
+          <code class="formula">EAR = (1 + APR/m)^m − 1</code>
+
+          <span class="formula-label">EAR with continuous compounding</span>
+          <code class="formula">EAR = e^APR − 1</code>
+
+          <span class="formula-label">Rule of 72</span>
+          <code class="formula">Years to double ≈ 72 / r</code>
+
+          <h3 class="topic" id="formulas-risk">Risk and Return</h3>
+          <span class="formula-label">CAPM</span>
+          <code class="formula">r = r_f + β × (r_m − r_f)</code>
+
+          <span class="formula-label">Market risk premium</span>
+          <code class="formula">MRP = r_m − r_f</code>
+
+          <span class="formula-label">Stock risk premium</span>
+          <code class="formula">SRP = β × (r_m − r_f)</code>
+
+          <span class="formula-label">Portfolio return</span>
+          <code class="formula">E(R_p) = Σ w_i × E(R_i)</code>
+
+          <span class="formula-label">Portfolio beta</span>
+          <code class="formula">β_p = Σ w_i × β_i</code>
+
+          <h3 class="topic" id="formulas-capbud">Capital Budgeting</h3>
+          <span class="formula-label">NPV</span>
+          <code class="formula">NPV = −CF₀ + Σ CF_t / (1+r)^t</code>
+
+          <span class="formula-label">IRR (definition)</span>
+          <code class="formula">The rate r* such that NPV = 0</code>
+
+          <span class="formula-label">Profitability Index</span>
+          <code class="formula">PI = PV(future cash flows) / |CF₀|</code>
+        </section>
+
+        <!-- ============================== APPENDIX A3: WORDING -->
+        <section class="module" id="wording">
+          <header class="module-header">
+            <div class="module-eyebrow">Appendix A3</div>
+            <h2 class="module-title">Wording Decoders</h2>
+            <p class="module-desc">The wording-to-formula mappings I learned to recognize fast. Most exam mistakes start here.</p>
+          </header>
+
+          <h3 class="topic" id="decoder-dividend">Dividend identification (D₀ vs D₁)</h3>
+          <div class="decoder">
+            <div class="key">"just paid"</div><div class="val">D₀</div>
+            <div class="key">"recently paid"</div><div class="val">D₀</div>
+            <div class="key">"annual dividend of $X"</div><div class="val">D₀</div>
+            <div class="key">"next dividend"</div><div class="val">D₁</div>
+            <div class="key">"next year's dividend"</div><div class="val">D₁</div>
+            <div class="key">"will pay next year"</div><div class="val">D₁</div>
+            <div class="key">"expected dividend"</div><div class="val">D₁</div>
+          </div>
+
+          <h3 class="topic" id="decoder-growth-pattern">Growth pattern identification</h3>
+          <div class="decoder">
+            <div class="key">"constant growth of X% forever"</div><div class="val">Gordon: P₀ = D₁/(r−g)</div>
+            <div class="key">"constant dividend forever"</div><div class="val">Zero-growth: P₀ = D/r</div>
+            <div class="key">"constant for X years, then stops/ceases"</div><div class="val">Finite annuity (TVM)</div>
+            <div class="key">"grow at X% for Y years, then Z% forever"</div><div class="val">Non-constant growth (multi-stage)</div>
+            <div class="key">"no dividends for X years, then growing"</div><div class="val">Deferred dividends</div>
+            <div class="key">"acquired/bought out at year X"</div><div class="val">Finite cash flow stream, no perpetuity</div>
+          </div>
+
+          <h3 class="topic" id="decoder-what-asked">What's being asked</h3>
+          <div class="decoder">
+            <div class="key">"current price" / "today"</div><div class="val">P₀</div>
+            <div class="key">"price in X years"</div><div class="val">P_X</div>
+            <div class="key">"required return" / "what return"</div><div class="val">r</div>
+            <div class="key">"growth rate" / "capital gains yield"</div><div class="val">g</div>
+            <div class="key">"dividend yield"</div><div class="val">D₁ / P₀</div>
+            <div class="key">"current dividend"</div><div class="val">D₀</div>
+            <div class="key">"indifferent" / "rate that makes NPV = 0"</div><div class="val">IRR</div>
+            <div class="key">"how much willing to pay"</div><div class="val">P₀ (your valuation)</div>
+          </div>
+
+          <h3 class="topic" id="decoder-bond">Bond wording traps</h3>
+          <div class="decoder">
+            <div class="key">"issued X years ago"</div><div class="val">Subtract from original maturity for remaining years</div>
+            <div class="key">"X% of par"</div><div class="val">Price = X × Face / 100</div>
+            <div class="key">"semiannual coupons"</div><div class="val">N × 2, I/Y ÷ 2, PMT ÷ 2</div>
+            <div class="key">"annual coupons"</div><div class="val">No division — use yearly values directly</div>
+            <div class="key">"sells at par"</div><div class="val">Price = Face = $1,000, so coupon = YTM</div>
+          </div>
+        </section>
+
+        <!-- ============================== APPENDIX A4: TWO-STEP PATTERNS -->
+        <section class="module" id="patterns">
+          <header class="module-header">
+            <div class="module-eyebrow">Appendix A4</div>
+            <h2 class="module-title">Two-Step Patterns</h2>
+            <p class="module-desc">The single most common exam structure: compute an intermediate value, then feed that into a second formula. Recognize the pattern and the problem solves itself.</p>
+          </header>
+
+          <h3 class="topic" id="pattern-retirement">Retirement (PV becomes the FV)</h3>
+          <p>Two distinct phases: accumulation (savings) and withdrawal (retirement). The lump sum you need at the start of retirement is the PV of withdrawals <em>and</em> the FV target of savings — same number, two perspectives.</p>
+
+          <ol>
+            <li>Find PV of withdrawals as of retirement date</li>
+            <li>That PV becomes the FV target for the savings phase</li>
+            <li>Solve PMT to reach that FV</li>
+          </ol>
+
+          <h3 class="topic" id="pattern-mortgage">Mortgage interest in a window</h3>
+          <ol>
+            <li>Find the monthly payment using the full loan: N, I/Y, PV, FV=0 → CPT PMT</li>
+            <li>Find the loan balance at the start of the window: N = months remaining, PMT, FV=0 → CPT PV</li>
+            <li>Total paid in window = PMT × months. Principal paid = starting balance − ending balance. Interest = total − principal.</li>
+          </ol>
+
+          <h3 class="topic" id="pattern-deferred-annuity">Deferred annuity</h3>
+          <ol>
+            <li>Compute PV of the annuity stream as of one period before the first payment</li>
+            <li>Discount that PV back to today using N = years until that point</li>
+          </ol>
+
+          <h3 class="topic" id="pattern-nonconstant">Non-constant growth stock</h3>
+          <ol>
+            <li>Build all irregular dividends year by year</li>
+            <li>Compute the first constant-growth dividend</li>
+            <li>P_n = D_(n+1) / (r − g) at the LAST irregular year</li>
+            <li>Add P_n to D_n to form the year-n cash flow</li>
+            <li>NPV everything back to today</li>
+          </ol>
+
+          <h3 class="topic" id="pattern-capm-stock">CAPM-then-stock</h3>
+          <ol>
+            <li>Use CAPM to find r: r = r_f + β(r_m − r_f)</li>
+            <li>Use r in whatever stock formula the problem requires (Gordon, solve-for-g, etc.)</li>
+          </ol>
+
+          <h3 class="topic" id="pattern-bond-future">Bond future price</h3>
+          <ol>
+            <li>If YTM isn't given: find it from current price, coupon, and maturity</li>
+            <li>Re-price the bond with the remaining years</li>
+          </ol>
+        </section>
+
+        <!-- ============================== PROBLEM-TYPE VIEW (hidden by default) -->
+        <div id="problem-view" style="display: none;">
+
+          <section class="module" id="pt-gordon">
+            <header class="module-header">
+              <div class="module-eyebrow">Stock Problem</div>
+              <h2 class="module-title">Constant Growth (Gordon)</h2>
+            </header>
+            <p>Use when the problem says dividends grow at a constant rate forever.</p>
+            <code class="formula">P₀ = D₁ / (r − g)</code>
+            <p>Watch the D₀ vs D₁ wording. "Just paid" = D₀, grow it. "Next year" = D₁, use directly.</p>
+          </section>
+
+          <section class="module" id="pt-zero-growth">
+            <header class="module-header">
+              <div class="module-eyebrow">Stock Problem</div>
+              <h2 class="module-title">Zero Growth / Preferred Stock</h2>
+            </header>
+            <p>Use when "constant dividend forever" with no growth. Same formula as a perpetuity.</p>
+            <code class="formula">P₀ = D / r</code>
+          </section>
+
+          <section class="module" id="pt-nonconstant">
+            <header class="module-header">
+              <div class="module-eyebrow">Stock Problem</div>
+              <h2 class="module-title">Non-Constant Growth</h2>
+            </header>
+            <p>See full template in Module 6.</p>
+            <ol>
+              <li>Build irregular dividends</li>
+              <li>D_(n+1) = first constant-growth dividend</li>
+              <li>P_n = D_(n+1)/(r−g) at last irregular year</li>
+              <li>Year n CF = D_n + P_n</li>
+              <li>NPV back to today</li>
+            </ol>
+          </section>
+
+          <section class="module" id="pt-deferred">
+            <header class="module-header">
+              <div class="module-eyebrow">Stock Problem</div>
+              <h2 class="module-title">Deferred Dividends</h2>
+            </header>
+            <ol>
+              <li>Find the first dividend (year t)</li>
+              <li>P_(t−1) = D_t / (r − g)</li>
+              <li>Discount back t−1 years</li>
+            </ol>
+          </section>
+
+          <section class="module" id="pt-finite">
+            <header class="module-header">
+              <div class="module-eyebrow">Stock Problem</div>
+              <h2 class="module-title">Finite Dividend (Stops Forever)</h2>
+            </header>
+            <p>"Constant dividend for X years, then ceases" → TVM annuity, not a perpetuity.</p>
+            <p>TVM Solver: N=years, PMT=dividend, FV=0, solve PV.</p>
+          </section>
+
+          <section class="module" id="pt-solve-g">
+            <header class="module-header">
+              <div class="module-eyebrow">Stock Problem</div>
+              <h2 class="module-title">Solving for g</h2>
+            </header>
+            <p>Case 1 (D₁ given): <code>g = r − D₁/P₀</code></p>
+            <p>Case 2 (D₀ given): <code>g = (P₀r − D₀) / (D₀ + P₀)</code></p>
+          </section>
+
+          <section class="module" id="pt-solve-r">
+            <header class="module-header">
+              <div class="module-eyebrow">Stock Problem</div>
+              <h2 class="module-title">Solving for r</h2>
+            </header>
+            <code class="formula">r = D₁/P₀ + g</code>
+            <p>Or: dividend yield + capital gains yield. If only D₀ is given, grow it first.</p>
+          </section>
+
+          <section class="module" id="pt-pe-ps">
+            <header class="module-header">
+              <div class="module-eyebrow">Stock Problem</div>
+              <h2 class="module-title">PE / P-S Valuation</h2>
+            </header>
+            <p>PE: <code>Price = EPS × P/E</code></p>
+            <p>P/S: <code>Price = (Sales / Shares) × P/S</code> — use when earnings are negative.</p>
+          </section>
+
+          <section class="module" id="pt-bond-price">
+            <header class="module-header">
+              <div class="module-eyebrow">Bond Problem</div>
+              <h2 class="module-title">Bond Pricing</h2>
+            </header>
+            <p>TVM Solver: enter N, I/Y, PMT, FV=1000, solve PV. Semiannual: N×2, I/Y÷2, PMT÷2.</p>
+          </section>
+
+          <section class="module" id="pt-bond-ytm">
+            <header class="module-header">
+              <div class="module-eyebrow">Bond Problem</div>
+              <h2 class="module-title">Solving for YTM</h2>
+            </header>
+            <p>TVM Solver: N, PV (negative), PMT, FV=1000, CPT I/Y. Semiannual: multiply answer by 2.</p>
+          </section>
+
+          <section class="module" id="pt-bond-coupon">
+            <header class="module-header">
+              <div class="module-eyebrow">Bond Problem</div>
+              <h2 class="module-title">Solving for Coupon Rate</h2>
+            </header>
+            <p>TVM Solver: N, I/Y, PV (negative), FV=1000, CPT PMT. Then:</p>
+            <p>Annual: <code>rate = PMT / Face</code></p>
+            <p>Semiannual: <code>rate = (PMT × 2) / Face</code></p>
+          </section>
+
+          <section class="module" id="pt-bond-future">
+            <header class="module-header">
+              <div class="module-eyebrow">Bond Problem</div>
+              <h2 class="module-title">Future Bond Price</h2>
+            </header>
+            <ol>
+              <li>Find YTM from current price (if not given)</li>
+              <li>Re-price with remaining years to maturity</li>
+            </ol>
+          </section>
+
+          <section class="module" id="pt-npv">
+            <header class="module-header">
+              <div class="module-eyebrow">Capital Budgeting</div>
+              <h2 class="module-title">NPV</h2>
+            </header>
+            <p><code>npv(rate%, −CF₀, {CF₁, CF₂, …})</code></p>
+            <p>Accept if NPV &gt; 0.</p>
+          </section>
+
+          <section class="module" id="pt-irr">
+            <header class="module-header">
+              <div class="module-eyebrow">Capital Budgeting</div>
+              <h2 class="module-title">IRR</h2>
+            </header>
+            <p><code>irr(−CF₀, {CF₁, CF₂, …})</code></p>
+            <p>Accept if IRR &gt; required return.</p>
+          </section>
+
+          <section class="module" id="pt-payback">
+            <header class="module-header">
+              <div class="module-eyebrow">Capital Budgeting</div>
+              <h2 class="module-title">Payback / PI / MIRR</h2>
+            </header>
+            <p><strong>Payback:</strong> years to recover CF₀ (no time value).</p>
+            <p><strong>Profitability Index:</strong> PV(future CFs) / |CF₀|; accept if &gt; 1.</p>
+            <p><strong>MIRR:</strong> reinvests at required return, not IRR; more realistic.</p>
+          </section>
+
+          <section class="module" id="pt-retirement">
+            <header class="module-header">
+              <div class="module-eyebrow">TVM Pattern</div>
+              <h2 class="module-title">Two-Step Retirement</h2>
+            </header>
+            <ol>
+              <li>PV of withdrawals = amount needed at retirement</li>
+              <li>That PV becomes the FV target for savings phase</li>
+              <li>Solve PMT to reach FV from today</li>
+            </ol>
+            <p>The key insight: <strong>PV becomes the FV</strong>.</p>
+          </section>
+
+          <section class="module" id="pt-mortgage">
+            <header class="module-header">
+              <div class="module-eyebrow">TVM Pattern</div>
+              <h2 class="module-title">Mortgage Amortization</h2>
+            </header>
+            <ol>
+              <li>Find monthly payment: full loan TVM, CPT PMT</li>
+              <li>Find balance at the desired window: N = remaining months, PMT, FV=0, CPT PV</li>
+              <li>Interest in window = (PMT × months) − (balance change)</li>
+            </ol>
+          </section>
+
+          <section class="module" id="pt-deferred-annuity">
+            <header class="module-header">
+              <div class="module-eyebrow">TVM Pattern</div>
+              <h2 class="module-title">Deferred Annuity</h2>
+            </header>
+            <ol>
+              <li>PV of the annuity = value one period before first payment</li>
+              <li>Discount that PV back to today</li>
+            </ol>
+          </section>
+
+          <section class="module" id="pt-ear-apr">
+            <header class="module-header">
+              <div class="module-eyebrow">TVM Pattern</div>
+              <h2 class="module-title">EAR vs APR</h2>
+            </header>
+            <code class="formula">EAR = (1 + APR/m)^m − 1</code>
+            <p>m: annual=1, semi=2, quarterly=4, monthly=12, daily=365.</p>
+            <p>Continuous: <code>EAR = e^APR − 1</code></p>
+          </section>
+
+        </div>
+
+        <!-- ============================== FOOTER -->
+        <footer class="footer">
+          <div>
+            <div>Built from a real semester of work. Use it well.</div>
+            <div style="margin-top: 6px;">FIN 3310 · Spring 2026</div>
+          </div>
+          <div class="footer-meta">
+            Last reviewed: 2026-05-13
+          </div>
+        </footer>
+
+      </div>
+
+      <!-- ============================== TOC -->
+      <aside class="toc" id="toc">
+        <div class="toc-label">On This Page</div>
+        <ul id="tocList">
+          <!-- populated by JS -->
+        </ul>
+      </aside>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+// =====================================================
+// THEME TOGGLE
+// =====================================================
+const themeToggle = document.getElementById('themeToggle');
+const root = document.body;
+
+function setTheme(theme) {
+  root.setAttribute('data-theme', theme);
+  try { localStorage.setItem('fin-theme', theme); } catch (e) {}
+}
+
+// Init from storage or system
+try {
+  const saved = localStorage.getItem('fin-theme');
+  if (saved) setTheme(saved);
+} catch (e) {}
+
+themeToggle.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  setTheme(next);
+});
+
+// =====================================================
+// VIEW TOGGLE (Module / Problem Type)
+// =====================================================
+const viewBtns = document.querySelectorAll('.view-btn');
+const problemView = document.getElementById('problem-view');
+const moduleViewSections = document.querySelectorAll('[data-view="module"]');
+const problemViewSections = document.querySelectorAll('[data-view="problem"]');
+
+// The actual content modules in main are tagged with the IDs starting "mod" or appendix; problem-type sections have IDs starting "pt-"
+const moduleModules = Array.from(document.querySelectorAll('.content > section.module')).filter(m => !m.id.startsWith('pt-'));
+
+viewBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    viewBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const view = btn.dataset.view;
+
+    // sidebar nav visibility
+    moduleViewSections.forEach(s => s.style.display = view === 'module' ? '' : 'none');
+    problemViewSections.forEach(s => s.style.display = view === 'problem' ? '' : 'none');
+
+    // content visibility
+    moduleModules.forEach(m => m.style.display = view === 'module' ? '' : 'none');
+    problemView.style.display = view === 'problem' ? '' : 'none';
+
+    // Reset scroll and TOC
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(buildTOC, 100);
+  });
+});
+
+// =====================================================
+// SEARCH (instant filter)
+// =====================================================
+const searchInput = document.getElementById('search');
+const contentRoot = document.getElementById('content');
+
+function getSearchableSections() {
+  // visible top-level sections in main content
+  return Array.from(contentRoot.querySelectorAll('section.module'));
+}
+
+function performSearch(query) {
+  const q = query.trim().toLowerCase();
+  const sections = getSearchableSections();
+
+  if (!q) {
+    sections.forEach(s => s.classList.remove('hidden-by-search'));
+    return;
+  }
+
+  sections.forEach(section => {
+    const text = section.textContent.toLowerCase();
+    if (text.includes(q)) {
+      section.classList.remove('hidden-by-search');
+    } else {
+      section.classList.add('hidden-by-search');
+    }
+  });
+}
+
+searchInput.addEventListener('input', e => performSearch(e.target.value));
+
+// Keyboard shortcut: / to focus search
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape' && document.activeElement === searchInput) {
+    searchInput.blur();
+    searchInput.value = '';
+    performSearch('');
+  }
+});
+
+// =====================================================
+// TOC GENERATION (right rail)
+// =====================================================
+const tocList = document.getElementById('tocList');
+
+function buildTOC() {
+  // Get visible h3.topic in currently-shown content
+  const visibleSections = getSearchableSections().filter(s => s.style.display !== 'none' && !s.classList.contains('hidden-by-search'));
+  const topics = [];
+
+  visibleSections.forEach(section => {
+    const h3s = section.querySelectorAll('h3.topic');
+    h3s.forEach(h => {
+      if (h.id) {
+        topics.push({ id: h.id, text: h.textContent });
+      }
+    });
+  });
+
+  tocList.innerHTML = topics.map(t => `<li><a href="#${t.id}">${t.text}</a></li>`).join('');
+}
+
+buildTOC();
+
+// =====================================================
+// SCROLL SPY (highlight active TOC + nav items)
+// =====================================================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const id = entry.target.id;
+    if (entry.isIntersecting) {
+      document.querySelectorAll('.toc a, .nav-item a').forEach(a => {
+        if (a.getAttribute('href') === '#' + id) a.classList.add('active');
+        else a.classList.remove('active');
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+document.querySelectorAll('h3.topic, section.module').forEach(el => {
+  if (el.id) observer.observe(el);
+});
+
+// Rebuild TOC on hash change
+window.addEventListener('hashchange', buildTOC);
+
+</script>
+
+</body>
+</html>
